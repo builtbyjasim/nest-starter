@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
+import { AuthResponseDto } from './dto/auth-response.dto';
 
 // @Injectable()
 // export class AuthService {
@@ -17,7 +18,8 @@ import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-  login(dto: LoginDto) {
+  async login(dto: LoginDto): Promise<AuthResponseDto> {
+    console.log('dto: ', dto);
     const { email, password, phone } = dto;
 
     // fake validation (DB later)
@@ -29,13 +31,23 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return {
+    // return {
+    //   user: {
+    //     id: 1,
+    //     name: 'Jasim',
+    //     phone: dto.phone,
+    //   },
+    //   token: 'jwt-token',
+    // };
+
+    // ADDED PROMISE BECAUSE OF TS ERROR -
+    return Promise.resolve({
       user: {
         id: 1,
         name: 'Jasim',
         phone: dto.phone,
       },
       token: 'jwt-token',
-    };
+    });
   }
 }
