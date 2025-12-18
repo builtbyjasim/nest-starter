@@ -15,9 +15,9 @@ export class UppercasePipe implements PipeTransform {
     const { type } = metadata;
 
     // Only transform route params or query strings
-    if (type !== 'param' && type !== 'query') {
-      return value;
-    }
+    // if (type !== 'param' && type !== 'query') {
+    //   return value;
+    // }
 
     if (typeof value !== 'string') {
       return value;

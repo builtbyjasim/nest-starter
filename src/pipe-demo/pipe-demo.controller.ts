@@ -5,9 +5,10 @@ import {
   Param,
   Post,
   Query,
-  ParseIntPipe,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UppercasePipe } from 'src/common/pipes/uppercase/uppercase.pipe';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('pipe-demo')
 export class PipeDemoController {
@@ -23,13 +24,24 @@ export class PipeDemoController {
     return search;
   }
 
-  // BODY FIELD PIPE
+  // pipe don't work with object like body it works only with single value
+  // BODY + VALIDATION + PIPE
   @Post('body')
   bodyExample(
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    dto: CreateUserDto,
+
     @Body('name', UppercasePipe) name: string,
-    @Body('age', ParseIntPipe) age: number,
   ) {
-    return { name, age };
+    return {
+      ...dto,
+      name, // validated + transformed
+    };
   }
 }
 
