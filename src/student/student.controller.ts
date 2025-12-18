@@ -9,48 +9,31 @@ import {
   Post,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
-import type { StudentResponse } from './dto/student-response.dto';
-import type { ApiResponse } from 'src/common/interfaces/api-response.interface';
 import { AddStudentDto } from './dto/add-student.dto';
+import { StudentResponse } from './interface/student-response.interface';
+import type { ApiResponseOptions } from './utils/api-response.util';
 
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get()
-  getAllStudents(): ApiResponse<StudentResponse[]> {
-    const students = this.studentService.getAllStudents();
-
-    return {
-      statusCode: HttpStatus.OK,
-      success: true,
-      message: 'user data fetch successfully!',
-      data: students,
-    };
+  // here no need for return type but i have keep it to understand the logic
+  getAllStudents(): ApiResponseOptions<StudentResponse[]> {
+    return this.studentService.getAllStudents();
   }
 
   @Get(':id')
   getStudentById(@Param('id', ParseIntPipe) id: number) {
-    const student = this.studentService.getStudentById(id);
-    return {
-      statusCode: HttpStatus.OK,
-      success: true,
-      message: 'user data fetch successfully!',
-      data: student,
-    };
+    return this.studentService.getStudentById(id);
   }
 
   @Post('add-student')
   addNewStudent(@Body() dto: AddStudentDto) {
-    const response = this.studentService.addNewStudent(dto);
-    return {
-      statusCode: HttpStatus.CREATED,
-      success: true,
-      message: 'student added successfully!',
-      data: response,
-    };
+    return this.studentService.addNewStudent(dto);
   }
 
+  // this one is left for example incase you will come back to see
   @Delete(':id')
   deleteStudent(@Param('id', ParseIntPipe) id: number) {
     const response = this.studentService.deleteStudent(id);

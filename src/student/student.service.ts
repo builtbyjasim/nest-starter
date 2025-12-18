@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { StudentResponse } from './dto/student-response.dto';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { StudentResponse } from './interface/student-response.interface';
+import { apiResponse, ApiResponseOptions } from './utils/api-response.util';
 
 @Injectable()
 export class StudentService {
@@ -8,18 +9,28 @@ export class StudentService {
     { id: 2, name: 'Wasim Khan', age: 38 },
   ];
 
-  getAllStudents(): StudentResponse[] {
-    return this.students;
+  getAllStudents(): ApiResponseOptions<StudentResponse[]> {
+    return apiResponse({
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: 'user data fetched successfully!',
+      data: this.students,
+    });
   }
 
-  getStudentById(id: number): StudentResponse {
+  getStudentById(id: number): ApiResponseOptions<StudentResponse> {
     const student = this.students.find((s) => s.id === id);
 
     if (!student) {
       throw new NotFoundException('Student not found');
     }
 
-    return student;
+    return apiResponse({
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: 'student fetched successfully!',
+      data: student,
+    });
   }
 
   addNewStudent({ name, age }: { name: string; age: number }) {
@@ -30,7 +41,13 @@ export class StudentService {
     };
 
     this.students.push(newStudent);
-    return this.students;
+
+    return apiResponse({
+      statusCode: HttpStatus.CREATED,
+      success: true,
+      message: 'student added successfully!',
+      data: this.students,
+    });
   }
 
   deleteStudent(id: number) {
